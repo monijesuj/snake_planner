@@ -7,7 +7,7 @@ from enum import Enum
 
 from .snake import Snake
 from .environment import Environment
-from config import GameConfig, DEFAULT_CONFIG
+from snake_planner.config import GameConfig, DEFAULT_CONFIG
 
 
 Position = Tuple[int, int]

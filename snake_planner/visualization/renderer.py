@@ -5,9 +5,9 @@ Pygame-based visualization for snake planning.
 import pygame
 from typing import List, Set, Tuple, Optional
 
-from game.game_state import GameState, GameStatus
-from config import GameConfig, Colors, DEFAULT_CONFIG
-from metrics.tracker import MetricsTracker
+from snake_planner.game.game_state import GameState, GameStatus
+from snake_planner.config import GameConfig, Colors, DEFAULT_CONFIG
+from snake_planner.metrics.tracker import MetricsTracker
 
 
 Position = Tuple[int, int]

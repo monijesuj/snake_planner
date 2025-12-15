@@ -7,7 +7,7 @@ from typing import List, Dict, Optional
 import json
 import time
 
-from planners.base_planner import PlanningResult
+from ..planners.base_planner import PlanningResult
 
 
 @dataclass

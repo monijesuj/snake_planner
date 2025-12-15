@@ -22,13 +22,13 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import pygame
 
-from config import GameConfig, Algorithm
-from game import GameState
-from game.game_state import GameStatus
-from planners import AStarPlanner, DijkstraPlanner, RRTPlanner, BFSPlanner
-from visualization import Renderer
-from metrics import MetricsTracker
-from metrics.tracker import ComparisonTracker
+from snake_planner.config import GameConfig, Algorithm
+from snake_planner.game import GameState
+from snake_planner.game.game_state import GameStatus
+from snake_planner.planners import AStarPlanner, DijkstraPlanner, RRTPlanner, BFSPlanner
+from snake_planner.visualization import Renderer
+from snake_planner.metrics import MetricsTracker
+from snake_planner.metrics.tracker import ComparisonTracker
 
 
 def get_planner(algorithm: Algorithm, grid_size: int):

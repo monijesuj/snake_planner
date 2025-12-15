@@ -4,7 +4,7 @@ Grid environment for the snake planning problem.
 
 import random
 from typing import Set, Tuple, Optional, List
-from config import Direction
+from snake_planner.config import Direction
 
 
 Position = Tuple[int, int]

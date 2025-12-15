@@ -5,9 +5,9 @@ Tests basic functionality without running full game.
 """
 
 import sys
-from config import GameConfig
-from game import Snake, Environment
-from planners import AStarPlanner, DijkstraPlanner, RRTPlanner, BFSPlanner
+from snake_planner.config import GameConfig
+from snake_planner.game import Snake, Environment
+from snake_planner.planners import AStarPlanner, DijkstraPlanner, RRTPlanner, BFSPlanner
 
 
 def test_planner(planner, name):
