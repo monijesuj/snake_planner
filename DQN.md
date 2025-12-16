@@ -235,6 +235,3 @@ This explains the **initial negative reward plateau** observed in training logs.
 * Enables meaningful comparison between **learning-based** and **classical planning** methods
 
 ---
-
-
-Just tell me.
