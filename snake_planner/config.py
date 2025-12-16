@@ -12,6 +12,7 @@ class Algorithm(Enum):
     DIJKSTRA = "dijkstra"
     RRT = "rrt"
     BFS = "bfs"
+    DQN = "dqn"
 
 
 class Direction(Enum):

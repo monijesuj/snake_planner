@@ -26,12 +26,13 @@ from snake_planner.config import GameConfig, Algorithm
 from snake_planner.game import GameState
 from snake_planner.game.game_state import GameStatus
 from snake_planner.planners import AStarPlanner, DijkstraPlanner, RRTPlanner, BFSPlanner
+from snake_planner.planners.dqn_planner import DQNPlanner 
 from snake_planner.visualization import Renderer
 from snake_planner.metrics import MetricsTracker
 from snake_planner.metrics.tracker import ComparisonTracker
 
 
-def get_planner(algorithm: Algorithm, grid_size: int):
+def get_planner(algorithm: Algorithm, grid_size: int, game_state):
     """
     Factory function to create planner based on algorithm choice.
     
@@ -47,6 +48,7 @@ def get_planner(algorithm: Algorithm, grid_size: int):
         Algorithm.DIJKSTRA: lambda: DijkstraPlanner(grid_size),
         Algorithm.RRT: lambda: RRTPlanner(grid_size, max_iterations=5000, goal_bias=0.15),
         Algorithm.BFS: lambda: BFSPlanner(grid_size),
+        Algorithm.DQN: lambda: DQNPlanner(game_state),
     }
     return planners[algorithm]()
 
@@ -65,7 +67,7 @@ def run_game(config: GameConfig, algorithm: Algorithm, headless: bool = False) -
     """
     # Initialize components
     game_state = GameState(config)
-    planner = get_planner(algorithm, config.grid_size)
+    planner = get_planner(algorithm, config.grid_size, game_state)
     metrics = MetricsTracker(planner.name)
     
     if not headless:
@@ -207,7 +209,7 @@ Examples:
     parser.add_argument(
         '--algorithm', '-a',
         type=str,
-        choices=['astar', 'dijkstra', 'rrt', 'bfs'],
+        choices=['astar', 'dijkstra', 'rrt', 'bfs', 'dqn'],
         default='astar',
         help='Planning algorithm to use (default: astar)'
     )
