@@ -2,6 +2,21 @@
 
 A graduate-level planning algorithms project that implements a Snake game where the robot (snake head) must navigate to destinations while avoiding its own tail (dynamic obstacle).
 
+## Demos
+
+Below are short recordings of the planners and gameplay. Large media are tracked with Git LFS.
+
+![A* Demo](media/snake_astar_20251212_191217.gif)
+
+![Survival Demo](media/snake_survival_20251212_193258.gif)
+
+<details>
+<summary>Optional video (MP4)</summary>
+
+[Survival run (MP4)](media/snake_survival_20251212_155349.mp4)
+
+</details>
+
 ## Project Overview
 
 This project compares different path planning algorithms in a discrete grid environment inspired by the classic Nokia Snake game. The snake's tail follows the exact path of the head and grows by 1 segment each time a destination is reached.
@@ -22,8 +37,19 @@ This project compares different path planning algorithms in a discrete grid envi
 ## Installation
 
 ```bash
-cd snake_planner
+# Option 1: requirements.txt (simple)
 pip install -r requirements.txt
+
+# Option 2: editable install (project has a pyproject.toml)
+pip install -e .
+```
+
+Note about media: this repo uses Git LFS for large files under `media/`.
+If you don’t see GIF/MP4 assets after cloning, run:
+
+```bash
+git lfs install
+git lfs pull
 ```
 
 ## Usage
@@ -51,28 +77,35 @@ python main.py --compare
 ## Project Structure
 
 ```
-snake_planner/
-├── main.py                 # Entry point with CLI
-├── config.py               # Configuration parameters
-├── game/
+.
+├── main.py                        # Entry point with CLI
+├── requirements.txt               # Simple install option
+├── pyproject.toml                 # Project metadata / packaging
+├── media/                         # Demo GIFs and videos (Git LFS)
+├── docs/                          # Additional docs
+├── test_planners.py               # Basic tests
+├── snake_planner/                 # Python package
 │   ├── __init__.py
-│   ├── snake.py            # Snake class (head + tail management)
-│   ├── environment.py      # Grid environment
-│   └── game_state.py       # Game state management
-├── planners/
-│   ├── __init__.py
-│   ├── base_planner.py     # Abstract base class for planners
-│   ├── astar.py            # A* algorithm
-│   ├── dijkstra.py         # Dijkstra's algorithm
-│   ├── rrt.py              # RRT algorithm (grid-adapted)
-│   └── bfs.py              # Breadth-First Search
-├── visualization/
-│   ├── __init__.py
-│   └── renderer.py         # Pygame visualization
-├── metrics/
-│   ├── __init__.py
-│   └── tracker.py          # Metrics collection and comparison
-└── requirements.txt
+│   ├── config.py                  # Configuration parameters
+│   ├── game/
+│   │   ├── __init__.py
+│   │   ├── snake.py               # Snake class (head + tail management)
+│   │   ├── environment.py         # Grid environment
+│   │   └── game_state.py          # Game state management
+│   ├── planners/
+│   │   ├── __init__.py
+│   │   ├── base_planner.py        # Abstract base class for planners
+│   │   ├── astar.py               # A* algorithm
+│   │   ├── dijkstra.py            # Dijkstra's algorithm
+│   │   ├── rrt.py                 # RRT algorithm (grid-adapted)
+│   │   ├── bfs.py                 # Breadth-First Search
+│   │   └── dqn_planner.py         # DQN-based planner (experimental)
+│   ├── visualization/
+│   │   ├── __init__.py
+│   │   └── renderer.py            # Pygame visualization
+│   └── metrics/
+│       ├── __init__.py
+│       └── tracker.py             # Metrics collection and comparison
 ```
 
 ## Algorithms
