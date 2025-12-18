@@ -13,6 +13,10 @@ class Algorithm(Enum):
     RRT = "rrt"
     BFS = "bfs"
     DQN = "dqn"
+    SURVIVAL = "survival"
+    HAMILTONIAN = "hamiltonian"
+    MCTS = "mcts"
+    TRUEMCTS = "truemcts"
 
 
 class Direction(Enum):

@@ -17,6 +17,8 @@ import argparse
 import sys
 import os
 
+from snake_planner.planners.survival import SurvivalPlanner
+
 # Add project root to path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
@@ -30,17 +32,22 @@ from snake_planner.visualization import Renderer
 from snake_planner.metrics import MetricsTracker
 from snake_planner.metrics.tracker import ComparisonTracker
 from snake_planner.planners import (
-    AStarPlanner, DijkstraPlanner, RRTPlanner, BFSPlanner, DQNPlanner
+    AStarPlanner, DijkstraPlanner, RRTPlanner, BFSPlanner, DQNPlanner,
+    SurvivalPlanner, HamiltonianPlanner, MCTSPlanner, TrueMCTSPlanner
 )
 
 def get_planner(algorithm: Algorithm, grid_size: int, game_state):
     # Mapping simplifies the factory logic
     planner_map = {
-        Algorithm.ASTAR: AStarPlanner,
-        Algorithm.DIJKSTRA: DijkstraPlanner,
-        Algorithm.BFS: BFSPlanner,
+        Algorithm.ASTAR: lambda grid_size: AStarPlanner(grid_size),
+        Algorithm.DIJKSTRA: lambda grid_size: DijkstraPlanner(grid_size),
+        Algorithm.BFS: lambda grid_size: BFSPlanner(grid_size),
+        Algorithm.SURVIVAL: lambda grid_size: SurvivalPlanner(grid_size),
+        Algorithm.HAMILTONIAN: lambda grid_size: HamiltonianPlanner(grid_size),
+        Algorithm.MCTS: lambda grid_size: MCTSPlanner(grid_size, num_simulations=200),
+        Algorithm.TRUEMCTS: lambda grid_size: TrueMCTSPlanner(grid_size),
     }
-    
+
     if algorithm in planner_map:
         return planner_map[algorithm](grid_size)
     elif algorithm == Algorithm.RRT:
@@ -206,7 +213,7 @@ Examples:
     parser.add_argument(
         '--algorithm', '-a',
         type=str,
-        choices=['astar', 'dijkstra', 'rrt', 'bfs', 'dqn'],
+        choices=['astar', 'dijkstra', 'rrt', 'bfs', 'dqn', 'survival', 'hamiltonian', 'mcts', 'truemcts'],
         default='astar',
         help='Planning algorithm to use (default: astar)'
     )
