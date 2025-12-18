@@ -25,32 +25,29 @@ import pygame
 from snake_planner.config import GameConfig, Algorithm
 from snake_planner.game import GameState
 from snake_planner.game.game_state import GameStatus
-from snake_planner.planners import AStarPlanner, DijkstraPlanner, RRTPlanner, BFSPlanner
 from snake_planner.planners.dqn_planner import DQNPlanner 
 from snake_planner.visualization import Renderer
 from snake_planner.metrics import MetricsTracker
 from snake_planner.metrics.tracker import ComparisonTracker
-
+from snake_planner.planners import (
+    AStarPlanner, DijkstraPlanner, RRTPlanner, BFSPlanner, DQNPlanner
+)
 
 def get_planner(algorithm: Algorithm, grid_size: int, game_state):
-    """
-    Factory function to create planner based on algorithm choice.
-    
-    Args:
-        algorithm: Algorithm enum value
-        grid_size: Size of the grid
-        
-    Returns:
-        Planner instance
-    """
-    planners = {
-        Algorithm.ASTAR: lambda: AStarPlanner(grid_size),
-        Algorithm.DIJKSTRA: lambda: DijkstraPlanner(grid_size),
-        Algorithm.RRT: lambda: RRTPlanner(grid_size, max_iterations=5000, goal_bias=0.15),
-        Algorithm.BFS: lambda: BFSPlanner(grid_size),
-        Algorithm.DQN: lambda: DQNPlanner(game_state),
+    # Mapping simplifies the factory logic
+    planner_map = {
+        Algorithm.ASTAR: AStarPlanner,
+        Algorithm.DIJKSTRA: DijkstraPlanner,
+        Algorithm.BFS: BFSPlanner,
     }
-    return planners[algorithm]()
+    
+    if algorithm in planner_map:
+        return planner_map[algorithm](grid_size)
+    elif algorithm == Algorithm.RRT:
+        return RRTPlanner(grid_size, max_iterations=5000)
+    elif algorithm == Algorithm.DQN:
+        return DQNPlanner(game_state)
+    raise ValueError(f"Unknown algorithm: {algorithm}")
 
 
 def run_game(config: GameConfig, algorithm: Algorithm, headless: bool = False) -> dict:
