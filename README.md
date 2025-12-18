@@ -6,9 +6,16 @@ A graduate-level planning algorithms project that implements a Snake game where 
 
 Below are short recordings of the planners and gameplay. Large media are tracked with Git LFS.
 
-![A* Demo](media/snake_astar_20251212_191217.gif)
-
-![Survival Demo](media/snake_survival_20251212_193258.gif)
+<table>
+  <tr>
+    <td><img src="media/snake_astar_20251212_191217.gif" alt="A* Demo" style="max-width:100%; height:auto;"></td>
+    <td><img src="media/snake_survival_20251212_193258.gif" alt="Survival Demo" style="max-width:100%; height:auto;"></td>
+  </tr>
+  <tr>
+    <td><img src="media/snake_dqn_20251218_175533.gif" alt="DQN Demo" style="max-width:100%; height:auto;"></td>
+    <td><img src="media/snake_mcts_20251218_175753.gif" alt="Monte Carlo Demo" style="max-width:100%; height:auto;"></td>
+  </tr>
+</table>
 
 <details>
 <summary>Optional video (MP4)</summary>

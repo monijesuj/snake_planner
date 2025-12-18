@@ -23,29 +23,36 @@ except ImportError:
     HAS_PIL = False
     print("Warning: pillow not installed. Install with: pip install pillow")
 
-from config import GameConfig, Algorithm
-from game import GameState
-from game.game_state import GameStatus
-from planners import (
+from snake_planner.config import GameConfig, Algorithm
+from snake_planner.game import GameState
+from snake_planner.game.game_state import GameStatus
+from snake_planner.planners import (
     AStarPlanner, DijkstraPlanner, RRTPlanner, BFSPlanner,
-    SurvivalPlanner, HamiltonianPlanner, MCTSPlanner
+    SurvivalPlanner, HamiltonianPlanner, MCTSPlanner, DQNPlanner
 )
-from visualization import Renderer
-from metrics import MetricsTracker
+from snake_planner.visualization import Renderer
+from snake_planner.metrics import MetricsTracker
 
 
-def get_planner(algorithm: Algorithm, grid_size: int):
-    """Factory function to create planner based on algorithm choice."""
+def get_planner(algorithm: Algorithm, grid_size: int, game_state=None):
+    """Factory function to create planner based on algorithm choice.
+
+    `game_state` is required for planners that need access to the live game (e.g. DQN).
+    """
     planners = {
-        Algorithm.ASTAR: lambda: AStarPlanner(grid_size),
-        Algorithm.DIJKSTRA: lambda: DijkstraPlanner(grid_size),
-        Algorithm.RRT: lambda: RRTPlanner(grid_size, max_iterations=5000, goal_bias=0.15),
-        Algorithm.BFS: lambda: BFSPlanner(grid_size),
-        Algorithm.SURVIVAL: lambda: SurvivalPlanner(grid_size),
-        Algorithm.HAMILTONIAN: lambda: HamiltonianPlanner(grid_size),
-        Algorithm.MCTS: lambda: MCTSPlanner(grid_size, num_simulations=200),
+        Algorithm.ASTAR: lambda gs: AStarPlanner(grid_size),
+        Algorithm.DIJKSTRA: lambda gs: DijkstraPlanner(grid_size),
+        Algorithm.RRT: lambda gs: RRTPlanner(grid_size, max_iterations=5000, goal_bias=0.15),
+        Algorithm.BFS: lambda gs: BFSPlanner(grid_size),
+        Algorithm.SURVIVAL: lambda gs: SurvivalPlanner(grid_size),
+        Algorithm.HAMILTONIAN: lambda gs: HamiltonianPlanner(grid_size),
+        Algorithm.MCTS: lambda gs: MCTSPlanner(grid_size, num_simulations=200),
+        Algorithm.DQN: lambda gs: DQNPlanner(gs),
     }
-    return planners[algorithm]()
+    factory = planners.get(algorithm)
+    if factory is None:
+        raise ValueError(f"Unsupported algorithm: {algorithm}")
+    return factory(game_state)
 
 
 def surface_to_pil(surface):
@@ -77,7 +84,7 @@ def record_game(config: GameConfig, algorithm: Algorithm, output_path: str,
     
     # Initialize components
     game_state = GameState(config)
-    planner = get_planner(algorithm, config.grid_size)
+    planner = get_planner(algorithm, config.grid_size, game_state)
     metrics = MetricsTracker(planner.name)
     renderer = Renderer(config)
     
@@ -234,7 +241,7 @@ Examples:
         '--algorithms', '-a',
         nargs='+',
         type=str,
-        choices=['astar', 'dijkstra', 'rrt', 'bfs', 'survival', 'hamiltonian', 'mcts'],
+        choices=['astar', 'dijkstra', 'rrt', 'bfs', 'survival', 'hamiltonian', 'mcts', 'dqn'],
         default=['survival', 'hamiltonian'],
         help='Algorithms to record (default: survival hamiltonian)'
     )
