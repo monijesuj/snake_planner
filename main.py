@@ -109,12 +109,32 @@ def run_game(config: GameConfig, algorithm: Algorithm, headless: bool = False) -
         if game_state.status == GameStatus.RUNNING:
             # Check if we need to replan
             if game_state.needs_replanning():
+                # Provide planner with current snake state when supported
+                if hasattr(planner, 'set_tail_tip') and hasattr(game_state.snake, 'tail'):
+                    try:
+                        planner.set_tail_tip(game_state.snake.tail[-1])
+                    except Exception:
+                        pass
+                if hasattr(planner, 'set_snake_body'):
+                    try:
+                        planner.set_snake_body(list(game_state.snake.body))
+                    except Exception:
+                        pass
+
                 # Plan path to destination
-                result = planner.plan(
-                    start=game_state.snake.head,
-                    goal=game_state.destination,
-                    obstacles=game_state.get_obstacles()
-                )
+                try:
+                    result = planner.plan(
+                        start=game_state.snake.head,
+                        goal=game_state.destination,
+                        obstacles=game_state.get_obstacles(),
+                        snake_length=game_state.snake.length
+                    )
+                except TypeError:
+                    result = planner.plan(
+                        start=game_state.snake.head,
+                        goal=game_state.destination,
+                        obstacles=game_state.get_obstacles()
+                    )
                 
                 metrics.record_plan(result)
                 

@@ -47,12 +47,15 @@ class SimState:
         return 0 <= x < self.grid_size and 0 <= y < self.grid_size
     
     def get_valid_moves(self) -> List[Position]:
-        """Get list of valid next positions."""
+        """Get list of valid next positions. Disallow moving directly into the neck (backwards)."""
         valid = []
-        body_set = self.get_body_set()
-        
+        neck = self.body[1] if len(self.body) > 1 else None
+
         for dx, dy in DIRECTIONS:
             new_pos = (self.head[0] + dx, self.head[1] + dy)
+            # Disallow moving into the neck (backwards)
+            if neck is not None and new_pos == neck:
+                continue
             if not self.is_valid_pos(new_pos):
                 continue
             # Can move to tail tip (it will move away)
@@ -60,7 +63,7 @@ class SimState:
             if new_pos in future_body:
                 continue
             valid.append(new_pos)
-        
+
         return valid
     
     def move(self, new_head: Position) -> bool:
