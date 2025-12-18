@@ -17,6 +17,7 @@ import argparse
 import sys
 import os
 
+from snake_planner.planners.reinforce_planner import ReinforcePlanner
 from snake_planner.planners.survival import SurvivalPlanner
 
 # Add project root to path
@@ -46,6 +47,7 @@ def get_planner(algorithm: Algorithm, grid_size: int, game_state):
         Algorithm.HAMILTONIAN: lambda grid_size: HamiltonianPlanner(grid_size),
         Algorithm.MCTS: lambda grid_size: MCTSPlanner(grid_size, num_simulations=200),
         Algorithm.TRUEMCTS: lambda grid_size: TrueMCTSPlanner(grid_size),
+        
     }
 
     if algorithm in planner_map:
@@ -54,6 +56,8 @@ def get_planner(algorithm: Algorithm, grid_size: int, game_state):
         return RRTPlanner(grid_size, max_iterations=5000)
     elif algorithm == Algorithm.DQN:
         return DQNPlanner(game_state)
+    elif algorithm == Algorithm.REINFORCE:
+        return ReinforcePlanner(game_state)
     raise ValueError(f"Unknown algorithm: {algorithm}")
 
 

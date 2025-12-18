@@ -1,5 +1,5 @@
 [project]
-dependencies = ["pygame", "numpy", "torch", "pillow"]
+dependencies = ["pygame", "numpy", "torch", "pillow", "matplotlib"]
 name = "snake_planner"
 requires-python = ">= 3.11, <3.14"
 version = "0.1.0"

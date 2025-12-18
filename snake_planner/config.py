@@ -13,6 +13,7 @@ class Algorithm(Enum):
     RRT = "rrt"
     BFS = "bfs"
     DQN = "dqn"
+    REINFORCE = "reinforce"
     SURVIVAL = "survival"
     HAMILTONIAN = "hamiltonian"
     MCTS = "mcts"

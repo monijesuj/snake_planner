@@ -5,8 +5,38 @@ import matplotlib.pyplot as plt
 from ..config import GameConfig
 from .snake_env_rl import SnakeRLEnv
 from .dqn_agent import DQNAgent
+from .reinforce_agent import ReinforceAgent
 
+def train_reinforce(episodes: int = 5000):
+    config = GameConfig(grid_size=20, speed=0)
+    env = SnakeRLEnv(config)
+    agent = ReinforceAgent(state_dim=11, action_dim=3)
+    
+    episode_rewards = []
 
+    for episode in range(episodes):
+        state = env.reset()
+        done = False
+        total_reward = 0
+        
+        while not done:
+            action, log_prob = agent.act(state)
+            next_state, reward, done = env.step(action)
+            
+            agent.store_outcome(log_prob, reward)
+            state = next_state
+            total_reward += reward
+            
+        # Update policy after full episode
+        agent.update()
+        episode_rewards.append(total_reward)
+
+        if episode % 100 == 0:
+            avg_reward = np.mean(episode_rewards[-100:])
+            print(f"Episode {episode:4d} | Avg Reward (Last 100): {avg_reward:6.2f}")
+
+    agent.save("reinforce_snake.pt")
+    plot_rewards(episode_rewards, window=100)
 
 def train_dqn(
     episodes: int = 5000,
@@ -100,4 +130,5 @@ def plot_rewards(rewards, window=50):
 
 
 if __name__ == "__main__":
-    train_dqn()
+    # train_dqn()
+    train_reinforce()
