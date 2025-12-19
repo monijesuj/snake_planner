@@ -2,7 +2,7 @@ import numpy as np
 from typing import Tuple, Optional, Set
 from snake_planner.game import GameState
 from snake_planner.config import GameConfig, Direction
-from snake_planner.common.geometry import Position
+from snake_planner.common.geometry import Position, manhattan_distance
 
 class SnakeRLEnv:
     def __init__(self, config: GameConfig):
@@ -14,6 +14,7 @@ class SnakeRLEnv:
         return self._get_state()
 
     def step(self, action: int) -> Tuple[np.ndarray, float, bool]:
+        old_dist = manhattan_distance(self.game.snake.head, self.game.destination)
         # Mapping 0: Straight, 1: Right, 2: Left
         clock_dirs = [Direction.UP, Direction.RIGHT, Direction.DOWN, Direction.LEFT]
         curr_idx = clock_dirs.index(self.game.snake.direction)
@@ -35,19 +36,31 @@ class SnakeRLEnv:
             
         if next_pos in self.game.snake.get_future_obstacles():
             return self._get_state(), -10.0, True # Self
-            
-        # Execute Move
+
+        # 3. Execute Move
         self.game.snake.move_to(next_pos)
         
-        reward = -0.1
+        # 4. Calculate New Distance
+        new_dist = manhattan_distance(next_pos, self.game.destination)
+        
+        # 5. SHAPED REWARD
+        # Base penalty for living
+        reward = -0.1 
+        
+        # Bonus for getting closer to food, penalty for moving away
+        if new_dist < old_dist:
+            reward += 0.2  # Encouragement
+        else:
+            reward -= 0.2  # Discouragement
+            
         if next_pos == self.game.destination:
-            reward = 10.0
+            reward = 20.0  # Increased from 10.0
             self.game.score += 1
             self.game.snake.grow(self.config.growth_per_food)
             try:
                 self.game.environment.spawn_destination(self.game.snake.get_body_set())
             except RuntimeError:
-                return self._get_state(), 20.0, True # Win
+                return self._get_state(), 50.0, True # Big win bonus
 
         return self._get_state(), reward, False
 

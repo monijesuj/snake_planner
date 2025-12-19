@@ -237,7 +237,7 @@ Examples:
     parser.add_argument(
         '--algorithm', '-a',
         type=str,
-        choices=['astar', 'dijkstra', 'rrt', 'bfs', 'dqn', 'survival', 'hamiltonian', 'mcts', 'truemcts'],
+        choices=list(e.name.lower() for e in Algorithm),
         default='astar',
         help='Planning algorithm to use (default: astar)'
     )
