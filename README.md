@@ -142,7 +142,3 @@ Baseline algorithm. Guarantees shortest path on unweighted grid.
 - **ESC**: Quit game
 - **SPACE**: Pause/Resume
 - **R**: Restart game
-
-## Author
-
-Graduate Planning Algorithms Course Project
